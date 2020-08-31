@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 let Snippet = new Schema({
+    snippet_short_description: {
+        type: String
+    },
+
     snippet_description: {
         type: String
     },
