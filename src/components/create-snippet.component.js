@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import Select from 'react-select'
 
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-javascript";

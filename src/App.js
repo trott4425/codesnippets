@@ -14,7 +14,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 
 //images
-import logo from "./logo.svg";
+//import logo from "./logo.svg";
 
 class App extends Component {
   render() {
