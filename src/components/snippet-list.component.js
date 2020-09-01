@@ -26,7 +26,7 @@ const Snippet = props =>(
                   <th className="meta-data-column-title">Tags</th><td>{props.snippet.snippet_tags}</td>
                 </tr>
                 <tr>
-                  <th colspan="2" scope="row">
+                  <th colSpan="2" scope="row">
                     Code
                     <div className="codeBox overflow-auto">
                           <SyntaxHighlighter language="javascript" style={docco}>

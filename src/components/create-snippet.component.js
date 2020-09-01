@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Select from 'react-select'
 
+import AceEditor from "react-ace";
+import "ace-builds/src-noconflict/mode-javascript";
+import "ace-builds/src-noconflict/theme-textmate";
+
+
 export default class CreateSnippet extends Component {
     constructor(props){
         super(props);
@@ -56,9 +61,9 @@ export default class CreateSnippet extends Component {
         });
     }
 
-    onChangeSnippetCode(e){
+    onChangeSnippetCode(value){
         this.setState({
-            snippet_code: e.target.value
+            snippet_code: value
         });
     }
 
@@ -84,6 +89,7 @@ export default class CreateSnippet extends Component {
 
             
         this.setState({
+            snippet_short_description: '',
             snippet_description: '',
             snippet_author: '',
             snippet_tags: '',
@@ -131,12 +137,14 @@ export default class CreateSnippet extends Component {
                     </div>
                     <div className="form-group">
                         <label>Code: </label>
-                        <input 
-                                type="text" 
-                                className="form-control"
-                                value={this.state.snippet_code}
-                                onChange={this.onChangeSnippetCode}
-                                />
+                        <AceEditor
+                            mode="javascript"
+                            theme="textmate"
+                            onChange={this.onChangeSnippetCode}
+                            name="UNIQUE_ID_OF_DIV"
+                            editorProps={{ $blockScrolling: true }}
+                            value={this.state.snippet_code}
+                        />
                     </div>
                     <div className="form-group">
                         <input type="submit" value="Create Snippet" className="btn btn-primary" />
