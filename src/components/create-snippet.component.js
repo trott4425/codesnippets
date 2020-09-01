@@ -6,18 +6,21 @@ import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-textmate";
 
+import AsyncSelect from 'react-select/async';
 
 export default class CreateSnippet extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-        
+
         this.state = {
             snippet_short_description: '',
             snippet_description: '',
             snippet_author: '',
-            snippet_tags: '',
+            snippet_tags: null,
             snippet_code: ''
         }
+
+        this.state.available_tags = [];
 
         this.onChangeSnippetShortDescription = this.onChangeSnippetShortDescription.bind(this);
         this.onChangeSnippetDescription = this.onChangeSnippetDescription.bind(this);
@@ -28,46 +31,65 @@ export default class CreateSnippet extends Component {
     }
 
     componentDidMount() {
-        axios.get('http://127.0.0.1:4000/codesnippets/')
-            .then(response => {
-                this.setState({ codesnippets: response.data });
-            })
-            .catch(function (error){
-                console.log(error);
-            })
+
     }
 
-    onChangeSnippetShortDescription(e){
+
+
+    onChangeSnippetShortDescription(e) {
         this.setState({
             snippet_short_description: e.target.value
         });
     }
 
-    onChangeSnippetDescription(e){
+    onChangeSnippetDescription(e) {
         this.setState({
             snippet_description: e.target.value
         });
     }
 
-    onChangeSnippetAuthor(e){
+    onChangeSnippetAuthor(e) {
         this.setState({
             snippet_author: e.target.value
         });
     }
 
-    onChangeSnippetTags(e){
-        this.setState({
-            snippet_tags: e.target.value
-        });
+    onChangeSnippetTags = value => {
+        console.log(value);
+        if(value){
+            this.setState({ snippet_tags: value });
+        }
+        return value;
     }
 
-    onChangeSnippetCode(value){
+    loadOptions = inputValue => {
+        return new Promise((resolve, reject) => {
+            // using setTimeout to emulate a call to server
+            axios.get('http://127.0.0.1:4000/tags/')
+            .then((response) => {
+                return response.data;
+            })
+            .then(data => {
+                console.log(data);
+                let tagsFromApi = data.map(tag => {
+                    return { value: tag.tag_name, label: tag.tag_name }
+                });
+                console.log(tagsFromApi);
+                resolve(tagsFromApi);
+
+            }).catch(error => {
+                console.log(error);
+            });
+        });
+    };
+
+    onChangeSnippetCode(value) {
         this.setState({
             snippet_code: value
         });
     }
 
-    onSubmit(e){
+    onSubmit(e) {
         e.preventDefault();
 
         console.log('Form submitted:');
@@ -87,53 +109,54 @@ export default class CreateSnippet extends Component {
         axios.post('http://127.0.0.1:4000/codesnippets/add', newSnippet)
             .then(res => console.log(res.data));
 
-            
+
         this.setState({
             snippet_short_description: '',
             snippet_description: '',
             snippet_author: '',
-            snippet_tags: '',
+            snippet_tags: null,
             snippet_code: ''
         });
     }
     render() {
         return (
-            <div style={{marginTop: 10}}>
+            <div style={{ marginTop: 10 }}>
                 <h3>Create New Todo</h3>
                 <form onSubmit={this.onSubmit}>
-                    <div className="form-group"> 
+                    <div className="form-group">
                         <label>Short Description: </label>
-                        <input  type="text"
-                                className="form-control"
-                                value={this.state.snippet_short_description}
-                                onChange={this.onChangeSnippetShortDescription}
-                                />
+                        <input type="text"
+                            className="form-control"
+                            value={this.state.snippet_short_description}
+                            onChange={this.onChangeSnippetShortDescription}
+                        />
                     </div>
-                    <div className="form-group"> 
+                    <div className="form-group">
                         <label>Description: </label>
-                        <input  type="text"
-                                className="form-control"
-                                value={this.state.snippet_description}
-                                onChange={this.onChangeSnippetDescription}
-                                />
+                        <input type="text"
+                            className="form-control"
+                            value={this.state.snippet_description}
+                            onChange={this.onChangeSnippetDescription}
+                        />
                     </div>
                     <div className="form-group">
                         <label>Author: </label>
-                        <input 
-                                type="text" 
-                                className="form-control"
-                                value={this.state.snippet_author}
-                                onChange={this.onChangeSnippetAuthor}
-                                />
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={this.state.snippet_author}
+                            onChange={this.onChangeSnippetAuthor}
+                        />
                     </div>
                     <div className="form-group">
                         <label>Tags: </label>
-                        <input 
-                                type="text" 
-                                className="form-control"
-                                value={this.state.snippet_tags}
-                                onChange={this.onChangeSnippetTags}
-                                />
+                        <AsyncSelect
+                            value={this.state.snippet_tags}
+                            cacheOptions
+                            loadOptions={this.loadOptions}
+                            defaultOptions
+                            onInputChange={this.onChangeSnippetTags}
+                        />
                     </div>
                     <div className="form-group">
                         <label>Code: </label>

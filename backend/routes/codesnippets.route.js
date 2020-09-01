@@ -1,5 +1,5 @@
 const codeSnippetRoutes = require('../node_modules/express').Router();
-let Snippet = require('../models/Snippet.model');
+let Snippet = require('../models/snippet.model');
 
 codeSnippetRoutes.route('/').get(function (req, res) {
     Snippet.find(function (err, snippets) {

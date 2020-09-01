@@ -12,13 +12,11 @@ const userRoutes = express.Router();
 
 //route imports
 const codeSnippetRoutes = require("./routes/codesnippets.route");
-
-let Snippet = require('./models/Snippet.model');
-let Tag = require('./models/tag.model');
+const tagRoutes = require("./routes/tags.route");
 
 var corsOptions = {
     origin: 'http://127.0.0.1:3000',
-    credentials: true,
+    credentials: false,
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
   }
 
@@ -33,14 +31,7 @@ connection.once('open', function () {
 })
 
 app.use('/codesnippets', codeSnippetRoutes);
-
-//Handle errors
-/*app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.json({ error : err });
-  });
-
-*/
+app.use('/tags', tagRoutes);
   
 app.listen(PORT, function () {
     console.log("Server is running on Port: " + PORT);
